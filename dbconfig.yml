@@ -1,0 +1,9 @@
+local:
+    dialect: mysql
+    datasource: root:root@tcp(127.0.0.1:3306)/clean_arch?charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=true
+    dir: migrations/
+
+skaffold:
+    dialect: mysql
+    datasource: root:root@tcp(rdb:3306)/clean_arch?charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=true
+    dir: migrations/

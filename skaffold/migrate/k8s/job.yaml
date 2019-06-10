@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: migrate
+spec:
+  backoffLimit: 5
+  parallelism: 1
+  completions: 1
+  template:
+    spec:
+      containers:
+        - name: migrate
+          image: clean_arch/migrate
+          command: ["sql-migrate", "up", "-env", "skaffold"]
+      restartPolicy: OnFailure

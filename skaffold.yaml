@@ -1,0 +1,24 @@
+apiVersion: skaffold/v1beta11
+kind: Config
+build:
+  artifacts:
+    - image: clean_arch/migrate
+      docker:
+        dockerfile: skaffold/migrate/Dockerfile
+deploy:
+  kubectl:
+    manifests:
+      - skaffold/rdb/k8s/*
+      - skaffold/migrate/k8s/*
+profiles:
+  - name: rdb
+    build:
+      artifacts:
+        - image: clean_arch/migrate
+          docker:
+            dockerfile: skaffold/migrate/Dockerfile
+    deploy:
+      kubectl:
+        manifests:
+          - skaffold/rdb/k8s/*
+          - skaffold/migrate/k8s/*

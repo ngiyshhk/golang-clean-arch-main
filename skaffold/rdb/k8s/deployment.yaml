@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rdb
+  labels:
+    app: rdb
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 3306
+      targetPort: 3306
+      protocol: TCP
+      name: rdb
+  selector:
+    app: rdb
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rdb
+  labels:
+    app: rdb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rdb
+  template:
+    metadata:
+      labels:
+        app: rdb
+    spec:
+      containers:
+      - name: rdb
+        image: mysql:5.7
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+        - name: mysql-configmap
+          mountPath: /etc/mysql/conf.d
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: root
+        - name: MYSQL_DATABASE
+          value: clean_arch
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pv-claim
+      - name: mysql-configmap
+        configMap:
+          name: mysql
