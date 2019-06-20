@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 
 	infraApi "github.com/ngiyshhk/golang-clean-arch-infra/api"
@@ -92,12 +93,13 @@ func getAllLibraries(libraryUsecase usecase.LibraryUsecase) func(*gin.Context) {
 }
 
 func main() {
-	db, err := gorm.Open("mysql", "root:root@/clean_arch?charset=utf8&parseTime=True")
+	dbserver := os.Getenv("CLEAN_ARCH_DB_HOST")
+	db, err := gorm.Open("mysql", fmt.Sprintf("root:root@tcp(%s)/clean_arch?charset=utf8&parseTime=True", dbserver))
 	userUsecase := &impl.UserUsecaseImpl{UserRepository: &database.UserRepositoryImpl{Db: db}}
 	libraryUsecase := &impl.LibraryUsecaseImpl{LibraryRepository: &infraApi.LibraryRepositoryImpl{}}
 
 	if err != nil {
-		fmt.Println("db connection error. got=%v", err.Error())
+		fmt.Printf("db connection error. got=%s\n", err.Error())
 		return
 	}
 

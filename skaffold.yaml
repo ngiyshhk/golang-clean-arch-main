@@ -5,11 +5,15 @@ build:
     - image: clean_arch/migrate
       docker:
         dockerfile: skaffold/migrate/Dockerfile
+    - image: clean_arch/api
+      docker:
+        dockerfile: skaffold/api/Dockerfile
 deploy:
   kubectl:
     manifests:
       - skaffold/rdb/k8s/*
       - skaffold/migrate/k8s/*
+      - skaffold/api/k8s/*
 profiles:
   - name: rdb
     build:
@@ -22,3 +26,13 @@ profiles:
         manifests:
           - skaffold/rdb/k8s/*
           - skaffold/migrate/k8s/*
+  - name: api
+    build:
+      artifacts:
+        - image: clean_arch/api
+          docker:
+            dockerfile: skaffold/api/Dockerfile
+    deploy:
+      kubectl:
+        manifests:
+          - skaffold/api/k8s/*
