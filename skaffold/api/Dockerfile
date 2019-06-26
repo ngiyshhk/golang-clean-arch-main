@@ -2,6 +2,7 @@ FROM golang:1.12-alpine as builder
 RUN apk add git gcc libc-dev make
 WORKDIR "/go/src/github.com/ngiyshhk/golang-clean-arch-main"
 COPY . .
+ENV GO111MODULE on
 RUN make all
 
 FROM alpine
